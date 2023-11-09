@@ -13,7 +13,7 @@ app.listen(3000, () => {
 });
 
 app.get(`*`, (req, res) => {
-  res.send('404 Not Found');
+  res.send('<h1> 404 Not Found <h1>');
 })
 
 
