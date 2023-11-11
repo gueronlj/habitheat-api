@@ -22,12 +22,12 @@ habit.get('/:id', async (req, res) => {
 })
 
 //insert new habit
-habit.post('/', async (req, res) => {
+habit.post('/:id', async (req, res) => {
    try {
       const response = await pool.query(`
          INSERT INTO habits (title, dates, user_id) 
          VALUES ($1, $2, $3) returning *;`, 
-         [req.body.title, req.body.dates, req.body.id]
+         [req.body.title, req.body.dates, req.params.id]
       );
       res.json(response.rows);
    } catch(e) {
