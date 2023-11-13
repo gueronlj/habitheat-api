@@ -14,7 +14,9 @@ const pool = new Pool({
 habit.get('/:id', async (req, res) => {
    try{
       const response = await pool.query(`
-      SELECT * FROM habits WHERE user_id = $1;`, [req.params.id]);
+      SELECT * FROM habits 
+      WHERE user_id = $1
+      ORDER BY id ASC;`, [req.params.id]);
       res.json(response.rows);
    } catch(e){
       res.send(`Error: ${e.message}`);
@@ -35,17 +37,31 @@ habit.post('/:id', async (req, res) => {
    }
 })
 
-//update habit
-habit.put('/:id', async (req, res) => {
-   try {
+habit.put('/:habitId', async (req, res) => {
+   try{
       const response = await pool.query(`
-         UPDATE habits SET dates = $1 WHERE id = $2 returning *;`, 
-         [req.body.dates, req.params.id]
+      UPDATE habits
+      SET dates = array_append(dates, $1)
+      WHERE id = $2 returning *;`,
+         [req.body, req.params.habitId]
       );
       res.json(response.rows);
-   } catch(e) {
+   } catch(e){
       res.send(`Error: ${e.message}`);
    }
 })
+
+//update habit
+// habit.put('/:id/DONTUSE', async (req, res) => {
+//    try {
+//       const response = await pool.query(`
+//          UPDATE habits SET dates = $1 WHERE id = $2 returning *;`, 
+//          [req.body.dates, req.params.id]
+//       );
+//       res.json(response.rows);
+//    } catch(e) {
+//       res.send(`Error: ${e.message}`);
+//    }
+// })
 
 module.exports = habit
