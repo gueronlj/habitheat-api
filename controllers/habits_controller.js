@@ -51,6 +51,18 @@ habit.put('/:habitId', async (req, res) => {
    }
 })
 
+habit.delete('/:id', async (req, res) => {
+   try {
+      const response = await pool.query(`
+         DELETE FROM habits WHERE id = $1 returning *;`, 
+         [req.params.id]
+      );
+      res.json(response.rows);
+   } catch(e) {
+      res.send(`Error: ${e.message}`);
+   } 
+})
+
 //update habit
 // habit.put('/:id/DONTUSE', async (req, res) => {
 //    try {
