@@ -23,6 +23,18 @@ habit.get('/:id', async (req, res) => {
    }
 })
 
+//fetch habit by habit_id
+habit.get('/id/:id', async (req, res) => {
+   try{
+      const response = await pool.query(`
+      SELECT * FROM habits 
+      WHERE id = $1;`, [req.params.id]);
+      res.json(response.rows);
+   } catch(e){
+      res.send(`Error: ${e.message}`);
+   }
+})
+
 //insert new habit
 habit.post('/:id', async (req, res) => {
    try {
