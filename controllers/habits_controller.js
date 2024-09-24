@@ -63,6 +63,27 @@ habit.put('/:habitId', async (req, res) => {
    }
 })
 
+habit.put('/edit/:habitId', async (req, res) => {
+   try {
+      const response = await pool.query(`
+      UPDATE habits
+      SET dates = (
+         CASE 
+            WHEN array_length(dates, 1) > 0 
+            THEN dates[1:array_length(dates, 1) - 1]
+            ELSE dates
+         END
+      )
+      WHERE id = $1
+      RETURNING *;`,
+      [req.params.habitId]
+      );
+      res.json(response.rows);
+   } catch(e) {
+      res.send(`Error: ${e.message}`);
+   }
+})
+
 habit.delete('/:id', async (req, res) => {
    try {
       const response = await pool.query(`
