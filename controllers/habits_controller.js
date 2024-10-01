@@ -10,13 +10,13 @@ const pool = new Pool({
   }
 });
 
-//fetch all habbits of user by user_id
-habit.get('/:id', async (req, res) => {
+//fetch all habbits of user by users email
+habit.get('/:email', async (req, res) => {
    try{
       const response = await pool.query(`
       SELECT * FROM habits 
-      WHERE user_id = $1
-      ORDER BY id ASC;`, [req.params.id]);
+      WHERE user_email = $1
+      ORDER BY id ASC;`, [req.params.email]);
       res.json(response.rows);
    } catch(e){
       res.send(`Error: ${e.message}`);
@@ -39,7 +39,7 @@ habit.get('/id/:id', async (req, res) => {
 habit.post('/:id', async (req, res) => {
    try {
       const response = await pool.query(`
-         INSERT INTO habits (title, dates, user_id) 
+         INSERT INTO habits (title, dates, user_email) 
          VALUES ($1, $2, $3) returning *;`, 
          [req.body.title, req.body.dates, req.params.id]
       );
